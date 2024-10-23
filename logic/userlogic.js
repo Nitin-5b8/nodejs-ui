@@ -10,7 +10,7 @@ const getallusers = async (req, res) => {
 }
 const addauser = async (req, res) => {
     const data = req.body
-    const obj = new user({ name: data.name, place: data.place, age: data.age, task: data.task })
+    const obj = new user({ name: data.name, id: data.id })
     try {
         await obj.save()
         res.send(obj)
@@ -53,32 +53,32 @@ const deleteditem = async (req, res) => {
     }
 }
 const jwt = require('jsonwebtoken');
-const adduser = ('/login', [body('email').isEmail(), body('password').notEmpty(),], async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
+const loginuser = ('', async (req, res) => {
+    const { name, id } = req.body;
+    /*if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
     }
-    else{
-        const { email, password } = req.body;
-    }
+    else {
+        const { name, id } = req.body;
+    }*/
     try {
-        const user = await User.findOne({ email });
+        const user = await User.findOne({ name });
         if (!user) return res.status(401).json({
             message: 'Invalidcredentials'
         });
-        else{
-            const isMatch = await bcrypt.compare(password, user.password);
-        }
-        if (!isMatch) return res.status(401).json({
-            message: 'Invalidcredentials'
-        });
-        else{
-            const token = jwt.sign({ userId: user._id }, 'your_jwt_secret', { expiresIn: '1h' });
-            res.status(200).json({ token });
+        else {
+            if
+                (!id == user.id) return res.status(401).json({
+                    message: 'Invalidcredentials'
+                });
+            else {
+                const token = jwt.sign({ userId: user._id }, 'your_jwt_secret', { expiresIn: '1h' });
+                res.status(200).json({ token });
+            }
         }
     } catch (error) {
         return res.status(500).json({ message: 'Login error', error: error.message });
     }
 });
 
-module.exports = { getallusers, addauser, updateuser, deleteditem,adduser }
+module.exports = { getallusers, addauser, updateuser, deleteditem, loginuser }
